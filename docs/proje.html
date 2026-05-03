@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Proje X (proje adını yazınız) – EHS’nin Analitik Labı</title>
+<title>Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi – EHS'nin Analitik Labı</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -315,9 +350,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#keşifsel-veri-analizi" id="toc-keşifsel-veri-analizi" class="nav-link" data-scroll-target="#keşifsel-veri-analizi"><span class="header-section-number">3.1</span> Keşifsel Veri Analizi</a></li>
   <li><a href="#trend-analizi" id="toc-trend-analizi" class="nav-link" data-scroll-target="#trend-analizi"><span class="header-section-number">3.2</span> Trend Analizi</a></li>
   <li><a href="#model-uydurma" id="toc-model-uydurma" class="nav-link" data-scroll-target="#model-uydurma"><span class="header-section-number">3.3</span> Model Uydurma</a></li>
-  <li><a href="#sonuçlar" id="toc-sonuçlar" class="nav-link" data-scroll-target="#sonuçlar"><span class="header-section-number">3.4</span> Sonuçlar</a></li>
   </ul></li>
-  <li><a href="#sonuçlar-ve-ana-çıkarımlar" id="toc-sonuçlar-ve-ana-çıkarımlar" class="nav-link" data-scroll-target="#sonuçlar-ve-ana-çıkarımlar"><span class="header-section-number">4</span> Sonuçlar ve Ana Çıkarımlar</a></li>
+  <li><a href="#sonuçlar" id="toc-sonuçlar" class="nav-link" data-scroll-target="#sonuçlar"><span class="header-section-number">4</span> Sonuçlar</a>
+  <ul class="collapse">
+  <li><a href="#sonuçlar-ve-ana-çıkarımlar" id="toc-sonuçlar-ve-ana-çıkarımlar" class="nav-link" data-scroll-target="#sonuçlar-ve-ana-çıkarımlar"><span class="header-section-number">4.1</span> Sonuçlar ve Ana Çıkarımlar</a></li>
+  </ul></li>
   </ul>
 </nav>
 </nav>
@@ -331,7 +368,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Proje X (proje adını yazınız)</h1>
+<h1 class="title">Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi</h1>
 </div>
 
 
@@ -348,57 +385,164 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Projemizle ilgili güncellemelerden haberdar olmak için bu xxxxx bağlantısındaki proje sayfamızı takip edin.</strong></p>
-<p>(Aşağıdaki başlıklar örnek olarak verilmiştir; lütfen gerektiği şekilde düzenlemekten çekinmeyin.)</p>
-<section id="proje-genel-bakış-ve-kapsamı" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Proje Genel Bakış ve Kapsamı</h1>
-<p>xxxxxx</p>
+<section id="proje-genel-bakış-ve-kapsamı" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="proje-genel-bakış-ve-kapsamı"><span class="header-section-number">1</span> Proje Genel Bakış ve Kapsamı</h2>
+<p>Bu proje, Türkiye’deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verilerini analiz etmektedir. 2018-2020 yılları arasındaki taban puanları, başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır.</p>
 </section>
-<section id="veri" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Veri</h1>
-<p>xxxxxx</p>
-<section id="veri-kaynağı" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="veri-kaynağı"><span class="header-section-number">2.1</span> Veri Kaynağı</h2>
-<p>xxxxxx</p>
+<section id="veri" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="veri"><span class="header-section-number">2</span> Veri</h2>
+<section id="veri-kaynağı" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="veri-kaynağı"><span class="header-section-number">2.1</span> Veri Kaynağı</h3>
+<p>Veriler, YÖK Atlas portalından <code>thestats</code> R paketi aracılığıyla elde edilmiştir.</p>
+<ul>
+<li>YÖK Atlas: <a href="https://yokatlas.yok.gov.tr/" class="uri">https://yokatlas.yok.gov.tr/</a></li>
+<li>thestats paketi: <a href="https://github.com/analyticsresearchlab/thestats" class="uri">https://github.com/analyticsresearchlab/thestats</a></li>
+</ul>
 </section>
-<section id="veri-hakkında-genel-bilgiler" class="level2" data-number="2.2">
-<h2 data-number="2.2" class="anchored" data-anchor-id="veri-hakkında-genel-bilgiler"><span class="header-section-number">2.2</span> Veri Hakkında Genel Bilgiler</h2>
-<p>xxxxxx</p>
+<section id="veri-hakkında-genel-bilgiler" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="veri-hakkında-genel-bilgiler"><span class="header-section-number">2.2</span> Veri Hakkında Genel Bilgiler</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(thestats)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>muhendislik <span class="ot">&lt;-</span> <span class="fu">list_score</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">region_names =</span> <span class="st">"all"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">city_names =</span> <span class="st">"all"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">university_names =</span> <span class="st">"all"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">department_names =</span> <span class="st">"Mechanical Engineering"</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">var_ids =</span> <span class="fu">c</span>(<span class="st">"X14"</span>, <span class="st">"X15"</span>, <span class="st">"X16"</span>, <span class="st">"X17"</span>, <span class="st">"X9"</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_dusuk_puan =</span> X14,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_dusuk_siralama =</span> X15,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_yuksek_puan =</span> X16,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_yuksek_siralama =</span> X17,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">kontenjan =</span> X9</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_dusuk_puan =</span> <span class="fu">as.numeric</span>(en_dusuk_puan),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_yuksek_puan =</span> <span class="fu">as.numeric</span>(en_yuksek_puan),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">en_dusuk_siralama =</span> <span class="fu">as.numeric</span>(en_dusuk_siralama),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">kontenjan =</span> <span class="fu">as.numeric</span>(kontenjan),</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">year =</span> <span class="fu">as.integer</span>(year)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(muhendislik)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 566
+Columns: 12
+$ id                 &lt;chr&gt; "1001", "1001", "1001", "1002", "1002", "1002", "10…
+$ year               &lt;int&gt; 2020, 2019, 2018, 2020, 2019, 2018, 2020, 2019, 201…
+$ type               &lt;chr&gt; "State", "State", "State", "State", "State", "State…
+$ program_code       &lt;int&gt; 100110399, 100110399, 100110399, 100210335, 1002103…
+$ university         &lt;chr&gt; "Bolu Abant Izzet Baysal University", "Bolu Abant I…
+$ faculty            &lt;chr&gt; "Engineering faculty", "Engineering faculty", "Facu…
+$ department         &lt;chr&gt; "Mechanical Engineering", "Mechanical Engineering",…
+$ en_dusuk_puan      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ en_dusuk_siralama  &lt;dbl&gt; 184.894, 184.314, 159.033, 276.620, NA, NA, 130.375…
+$ en_yuksek_puan     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+$ en_yuksek_siralama &lt;dbl&gt; 142.673, 123.585, 79.650, 137.926, 184.417, 99.773,…
+$ kontenjan          &lt;dbl&gt; 60, 60, 60, 25, 25, 40, 70, 65, 60, 60, 60, 50, 25,…</code></pre>
+</div>
+</div>
 </section>
-<section id="tercih-sebebi" class="level2" data-number="2.3">
-<h2 data-number="2.3" class="anchored" data-anchor-id="tercih-sebebi"><span class="header-section-number">2.3</span> Tercih Sebebi</h2>
-<p>xxxxxx</p>
+<section id="tercih-sebebi" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="tercih-sebebi"><span class="header-section-number">2.3</span> Tercih Sebebi</h3>
+<p>Makine Mühendisliği, Türkiye’de en çok tercih edilen mühendislik bölümlerinden biridir. Yıllar içindeki puan değişimi, bölümün popülaritesi ve üniversite türlerine göre farklılıklar hakkında önemli bulgular sunmaktadır.</p>
 </section>
-<section id="ön-işleme" class="level2" data-number="2.4">
-<h2 data-number="2.4" class="anchored" data-anchor-id="ön-işleme"><span class="header-section-number">2.4</span> Ön İşleme</h2>
-<p>xxxxxx</p>
-</section>
-</section>
-<section id="analiz" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Analiz</h1>
-<p>xxxxxx</p>
-<section id="keşifsel-veri-analizi" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="keşifsel-veri-analizi"><span class="header-section-number">3.1</span> Keşifsel Veri Analizi</h2>
-<p>xxxxxx</p>
-</section>
-<section id="trend-analizi" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="trend-analizi"><span class="header-section-number">3.2</span> Trend Analizi</h2>
-<p>xxxxxx</p>
-</section>
-<section id="model-uydurma" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="model-uydurma"><span class="header-section-number">3.3</span> Model Uydurma</h2>
-<p>xxxxxx</p>
-</section>
-<section id="sonuçlar" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="sonuçlar"><span class="header-section-number">3.4</span> Sonuçlar</h2>
-<p>xxxxxx</p>
+<section id="ön-işleme" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="ön-işleme"><span class="header-section-number">2.4</span> Ön İşleme</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Toplam NA sayısı:"</span>, <span class="fu">sum</span>(<span class="fu">is.na</span>(muhendislik)), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Toplam NA sayısı: 1273 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Satır sayısı:"</span>, <span class="fu">nrow</span>(muhendislik), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Satır sayısı: 566 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Yıllar:"</span>, <span class="fu">unique</span>(muhendislik<span class="sc">$</span>year), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Yıllar: 2020 2019 2018 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Üniversite türleri:"</span>, <span class="fu">unique</span>(muhendislik<span class="sc">$</span>type), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Üniversite türleri: State Private </code></pre>
+</div>
+</div>
 </section>
 </section>
-<section id="sonuçlar-ve-ana-çıkarımlar" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Sonuçlar ve Ana Çıkarımlar</h1>
-<p>xxxxxx</p>
+<section id="analiz" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="analiz"><span class="header-section-number">3</span> Analiz</h2>
+<section id="keşifsel-veri-analizi" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="keşifsel-veri-analizi"><span class="header-section-number">3.1</span> Keşifsel Veri Analizi</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>muhendislik <span class="sc">|&gt;</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(en_dusuk_puan)) <span class="sc">|&gt;</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, type) <span class="sc">|&gt;</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ort_taban_puan =</span> <span class="fu">mean</span>(en_dusuk_puan, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 3
+# ℹ 3 variables: year &lt;int&gt;, type &lt;chr&gt;, ort_taban_puan &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+<section id="trend-analizi" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="trend-analizi"><span class="header-section-number">3.2</span> Trend Analizi</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>muhendislik <span class="sc">|&gt;</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(en_dusuk_puan)) <span class="sc">|&gt;</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year, type) <span class="sc">|&gt;</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">ort_taban_puan =</span> <span class="fu">mean</span>(en_dusuk_puan, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> ort_taban_puan, <span class="at">color =</span> type, <span class="at">group =</span> type)) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Makine Mühendisliği Taban Puanlarının Yıllara Göre Değişimi"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Yıl"</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Ortalama Taban Puan"</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Üniversite Türü"</span></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="proje_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="model-uydurma" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="model-uydurma"><span class="header-section-number">3.3</span> Model Uydurma</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>muhendislik <span class="sc">|&gt;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(en_dusuk_puan)) <span class="sc">|&gt;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(type) <span class="sc">|&gt;</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">ort_taban =</span> <span class="fu">mean</span>(en_dusuk_puan, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_taban =</span> <span class="fu">min</span>(en_dusuk_puan, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_taban =</span> <span class="fu">max</span>(en_dusuk_puan, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 0 × 4
+# ℹ 4 variables: type &lt;chr&gt;, ort_taban &lt;dbl&gt;, min_taban &lt;dbl&gt;, max_taban &lt;dbl&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="sonuçlar" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="sonuçlar"><span class="header-section-number">4</span> Sonuçlar</h2>
+<section id="sonuçlar-ve-ana-çıkarımlar" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="sonuçlar-ve-ana-çıkarımlar"><span class="header-section-number">4.1</span> Sonuçlar ve Ana Çıkarımlar</h3>
+<p>Analiz tamamlandıktan sonra buraya bulgular eklenecektir.</p>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

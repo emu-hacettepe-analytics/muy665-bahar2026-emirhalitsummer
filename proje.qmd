@@ -1,56 +1,129 @@
 ---
-title: "Proje X (proje adını yazınız)"
+title: "Türkiye'de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi"
 number-sections: true
 ---
 
-**Projemizle ilgili güncellemelerden haberdar olmak için bu xxxxx bağlantısındaki proje sayfamızı takip edin.**
+## Proje Genel Bakış ve Kapsamı
 
-(Aşağıdaki başlıklar örnek olarak verilmiştir; lütfen gerektiği şekilde düzenlemekten çekinmeyin.)
+Bu proje, Türkiye'deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verilerini analiz etmektedir. 2018-2020 yılları arasındaki taban puanları, başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır.
 
-# Proje Genel Bakış ve Kapsamı
+## Veri
 
-xxxxxx
+### Veri Kaynağı
 
-# Veri
+Veriler, YÖK Atlas portalından `thestats` R paketi aracılığıyla elde edilmiştir.
 
-xxxxxx
+-   YÖK Atlas: <https://yokatlas.yok.gov.tr/>
+-   thestats paketi: <https://github.com/analyticsresearchlab/thestats>
 
-## Veri Kaynağı
+### Veri Hakkında Genel Bilgiler
 
-xxxxxx
+```{r}
+#| message: false
+#| warning: false
 
-## Veri Hakkında Genel Bilgiler
+library(thestats)
+library(dplyr)
+library(ggplot2)
 
-xxxxxx
+muhendislik <- list_score(
+  region_names = "all",
+  city_names = "all",
+  university_names = "all",
+  department_names = "Mechanical Engineering",
+  var_ids = c("X14", "X15", "X16", "X17", "X9")
+) |>
+  rename(
+    en_dusuk_puan = X14,
+    en_dusuk_siralama = X15,
+    en_yuksek_puan = X16,
+    en_yuksek_siralama = X17,
+    kontenjan = X9
+  ) |>
+  mutate(
+    en_dusuk_puan = as.numeric(en_dusuk_puan),
+    en_yuksek_puan = as.numeric(en_yuksek_puan),
+    en_dusuk_siralama = as.numeric(en_dusuk_siralama),
+    kontenjan = as.numeric(kontenjan),
+    year = as.integer(year)
+  )
 
-## Tercih Sebebi
+glimpse(muhendislik)
+```
 
-xxxxxx
+### Tercih Sebebi
 
-## Ön İşleme
+Makine Mühendisliği, Türkiye'de en çok tercih edilen mühendislik bölümlerinden biridir. Yıllar içindeki puan değişimi, bölümün popülaritesi ve üniversite türlerine göre farklılıklar hakkında önemli bulgular sunmaktadır.
 
-xxxxxx
+### Ön İşleme
 
-# Analiz
+```{r}
+#| message: false
+#| warning: false
 
-xxxxxx
+cat("Toplam NA sayısı:", sum(is.na(muhendislik)), "\n")
+cat("Satır sayısı:", nrow(muhendislik), "\n")
+cat("Yıllar:", unique(muhendislik$year), "\n")
+cat("Üniversite türleri:", unique(muhendislik$type), "\n")
+```
 
-## Keşifsel Veri Analizi
+## Analiz
 
-xxxxxx
+### Keşifsel Veri Analizi
 
-## Trend Analizi
+```{r}
+#| message: false
+#| warning: false
 
-xxxxxx
+muhendislik |>
+  filter(!is.na(en_dusuk_puan)) |>
+  group_by(year, type) |>
+  summarise(ort_taban_puan = mean(en_dusuk_puan, na.rm = TRUE),
+            .groups = "drop")
+```
 
-## Model Uydurma
+### Trend Analizi
 
-xxxxxx
+```{r}
+#| message: false
+#| warning: false
+
+muhendislik |>
+  filter(!is.na(en_dusuk_puan)) |>
+  group_by(year, type) |>
+  summarise(ort_taban_puan = mean(en_dusuk_puan, na.rm = TRUE),
+            .groups = "drop") |>
+  ggplot(aes(x = year, y = ort_taban_puan, color = type, group = type)) +
+  geom_line(size = 1) +
+  geom_point(size = 3) +
+  labs(
+    title = "Makine Mühendisliği Taban Puanlarının Yıllara Göre Değişimi",
+    x = "Yıl",
+    y = "Ortalama Taban Puan",
+    color = "Üniversite Türü"
+  ) +
+  theme_minimal()
+```
+
+### Model Uydurma
+
+```{r}
+#| message: false
+#| warning: false
+
+muhendislik |>
+  filter(!is.na(en_dusuk_puan)) |>
+  group_by(type) |>
+  summarise(
+    ort_taban = mean(en_dusuk_puan, na.rm = TRUE),
+    min_taban = min(en_dusuk_puan, na.rm = TRUE),
+    max_taban = max(en_dusuk_puan, na.rm = TRUE),
+    .groups = "drop"
+  )
+```
 
 ## Sonuçlar
 
-xxxxxx
+### Sonuçlar ve Ana Çıkarımlar
 
-# Sonuçlar ve Ana Çıkarımlar
-
-xxxxxx
+Analiz tamamlandıktan sonra buraya bulgular eklenecektir.

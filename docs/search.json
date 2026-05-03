@@ -2,9 +2,9 @@
   {
     "objectID": "proje.html",
     "href": "proje.html",
-    "title": "Proje X (proje adını yazınız)",
+    "title": "Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi",
     "section": "",
-    "text": "Projemizle ilgili güncellemelerden haberdar olmak için bu xxxxx bağlantısındaki proje sayfamızı takip edin.\n(Aşağıdaki başlıklar örnek olarak verilmiştir; lütfen gerektiği şekilde düzenlemekten çekinmeyin.)"
+    "text": "Bu proje, Türkiye’deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verilerini analiz etmektedir. 2018-2020 yılları arasındaki taban puanları, başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır."
   },
   {
     "objectID": "proje.html#veri-kaynağı",
@@ -58,9 +58,9 @@
   {
     "objectID": "proje.html#sonuçlar",
     "href": "proje.html#sonuçlar",
-    "title": "Proje X (proje adını yazınız)",
-    "section": "3.4 Sonuçlar",
-    "text": "3.4 Sonuçlar\nxxxxxx"
+    "title": "Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi",
+    "section": "4 Sonuçlar",
+    "text": "4 Sonuçlar\n\n4.1 Sonuçlar ve Ana Çıkarımlar\nAnaliz tamamlandıktan sonra buraya bulgular eklenecektir."
   },
   {
     "objectID": "portfolyo.html",
@@ -149,5 +149,26 @@
     "title": "My Blog",
     "section": "",
     "text": "Bu sayfa yapım aşamasındadır.\n\n\n\n Back to top"
+  },
+  {
+    "objectID": "proje.html#proje-genel-bakış-ve-kapsamı",
+    "href": "proje.html#proje-genel-bakış-ve-kapsamı",
+    "title": "Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi",
+    "section": "",
+    "text": "Bu proje, Türkiye’deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verilerini analiz etmektedir. 2018-2020 yılları arasındaki taban puanları, başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır."
+  },
+  {
+    "objectID": "proje.html#veri",
+    "href": "proje.html#veri",
+    "title": "Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi",
+    "section": "2 Veri",
+    "text": "2 Veri\n\n2.1 Veri Kaynağı\nVeriler, YÖK Atlas portalından thestats R paketi aracılığıyla elde edilmiştir.\n\nYÖK Atlas: https://yokatlas.yok.gov.tr/\nthestats paketi: https://github.com/analyticsresearchlab/thestats\n\n\n\n2.2 Veri Hakkında Genel Bilgiler\n\nlibrary(thestats)\nlibrary(dplyr)\nlibrary(ggplot2)\n\nmuhendislik &lt;- list_score(\n  region_names = \"all\",\n  city_names = \"all\",\n  university_names = \"all\",\n  department_names = \"Mechanical Engineering\",\n  var_ids = c(\"X14\", \"X15\", \"X16\", \"X17\", \"X9\")\n) |&gt;\n  rename(\n    en_dusuk_puan = X14,\n    en_dusuk_siralama = X15,\n    en_yuksek_puan = X16,\n    en_yuksek_siralama = X17,\n    kontenjan = X9\n  ) |&gt;\n  mutate(\n    en_dusuk_puan = as.numeric(en_dusuk_puan),\n    en_yuksek_puan = as.numeric(en_yuksek_puan),\n    en_dusuk_siralama = as.numeric(en_dusuk_siralama),\n    kontenjan = as.numeric(kontenjan),\n    year = as.integer(year)\n  )\n\nglimpse(muhendislik)\n\nRows: 566\nColumns: 12\n$ id                 &lt;chr&gt; \"1001\", \"1001\", \"1001\", \"1002\", \"1002\", \"1002\", \"10…\n$ year               &lt;int&gt; 2020, 2019, 2018, 2020, 2019, 2018, 2020, 2019, 201…\n$ type               &lt;chr&gt; \"State\", \"State\", \"State\", \"State\", \"State\", \"State…\n$ program_code       &lt;int&gt; 100110399, 100110399, 100110399, 100210335, 1002103…\n$ university         &lt;chr&gt; \"Bolu Abant Izzet Baysal University\", \"Bolu Abant I…\n$ faculty            &lt;chr&gt; \"Engineering faculty\", \"Engineering faculty\", \"Facu…\n$ department         &lt;chr&gt; \"Mechanical Engineering\", \"Mechanical Engineering\",…\n$ en_dusuk_puan      &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…\n$ en_dusuk_siralama  &lt;dbl&gt; 184.894, 184.314, 159.033, 276.620, NA, NA, 130.375…\n$ en_yuksek_puan     &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…\n$ en_yuksek_siralama &lt;dbl&gt; 142.673, 123.585, 79.650, 137.926, 184.417, 99.773,…\n$ kontenjan          &lt;dbl&gt; 60, 60, 60, 25, 25, 40, 70, 65, 60, 60, 60, 50, 25,…\n\n\n\n\n2.3 Tercih Sebebi\nMakine Mühendisliği, Türkiye’de en çok tercih edilen mühendislik bölümlerinden biridir. Yıllar içindeki puan değişimi, bölümün popülaritesi ve üniversite türlerine göre farklılıklar hakkında önemli bulgular sunmaktadır.\n\n\n2.4 Ön İşleme\n\ncat(\"Toplam NA sayısı:\", sum(is.na(muhendislik)), \"\\n\")\n\nToplam NA sayısı: 1273 \n\ncat(\"Satır sayısı:\", nrow(muhendislik), \"\\n\")\n\nSatır sayısı: 566 \n\ncat(\"Yıllar:\", unique(muhendislik$year), \"\\n\")\n\nYıllar: 2020 2019 2018 \n\ncat(\"Üniversite türleri:\", unique(muhendislik$type), \"\\n\")\n\nÜniversite türleri: State Private"
+  },
+  {
+    "objectID": "proje.html#analiz",
+    "href": "proje.html#analiz",
+    "title": "Türkiye’de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi",
+    "section": "3 Analiz",
+    "text": "3 Analiz\n\n3.1 Keşifsel Veri Analizi\n\nmuhendislik |&gt;\n  filter(!is.na(en_dusuk_puan)) |&gt;\n  group_by(year, type) |&gt;\n  summarise(ort_taban_puan = mean(en_dusuk_puan, na.rm = TRUE),\n            .groups = \"drop\")\n\n# A tibble: 0 × 3\n# ℹ 3 variables: year &lt;int&gt;, type &lt;chr&gt;, ort_taban_puan &lt;dbl&gt;\n\n\n\n\n3.2 Trend Analizi\n\nmuhendislik |&gt;\n  filter(!is.na(en_dusuk_puan)) |&gt;\n  group_by(year, type) |&gt;\n  summarise(ort_taban_puan = mean(en_dusuk_puan, na.rm = TRUE),\n            .groups = \"drop\") |&gt;\n  ggplot(aes(x = year, y = ort_taban_puan, color = type, group = type)) +\n  geom_line(size = 1) +\n  geom_point(size = 3) +\n  labs(\n    title = \"Makine Mühendisliği Taban Puanlarının Yıllara Göre Değişimi\",\n    x = \"Yıl\",\n    y = \"Ortalama Taban Puan\",\n    color = \"Üniversite Türü\"\n  ) +\n  theme_minimal()\n\n\n\n\n\n\n\n\n\n\n3.3 Model Uydurma\n\nmuhendislik |&gt;\n  filter(!is.na(en_dusuk_puan)) |&gt;\n  group_by(type) |&gt;\n  summarise(\n    ort_taban = mean(en_dusuk_puan, na.rm = TRUE),\n    min_taban = min(en_dusuk_puan, na.rm = TRUE),\n    max_taban = max(en_dusuk_puan, na.rm = TRUE),\n    .groups = \"drop\"\n  )\n\n# A tibble: 0 × 4\n# ℹ 4 variables: type &lt;chr&gt;, ort_taban &lt;dbl&gt;, min_taban &lt;dbl&gt;, max_taban &lt;dbl&gt;"
   }
 ]

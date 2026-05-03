@@ -21,12 +21,8 @@ website:
             href: proje.qmd
             
     tools:
-      - icon: github
-        href: https://twitter.com
-      - icon: twitter
-        href: https://twitter.com
       - icon: linkedin
-        href: https://linkedin.com
+        href: https://www.linkedin.com/in/emirsumer/
 
   sidebar:
     - title: "Çalışmalar"

@@ -3,7 +3,7 @@ title: "Hakkımda"
 sidebar: false
 ---
 
-![](images/DSC_2198 kopya.JPG){fig-align="center" width="191"}
+![](images/DSC_2198%20kopya.JPG){fig-align="center" width="191"}
 
 # Education
 
@@ -37,3 +37,5 @@ R, Quarto, Git, Python, Matlab, MSC Nastran/Patran, HyperMesh, Abaqus, nCode
 # Hobbies
 
 Basketball, Music, Movies
+
+[Download CV](CV.pdf)

@@ -1,19 +1,5 @@
 [
   {
-    "objectID": "about.html#employments",
-    "href": "about.html#employments",
-    "title": "Hakkımda",
-    "section": "Employments",
-    "text": "Employments\n\nTurkish Aerospace, Fatigue & Damage Tolerance Engineer, June 2023 - Present"
-  },
-  {
-    "objectID": "about.html#internships",
-    "href": "about.html#internships",
-    "title": "Hakkımda",
-    "section": "Internships",
-    "text": "Internships\n\nTurkish Aerospace, Sky Experience Engineering Intern, December 2022 - June 2023\nTEMSA, Marketing Intern, 2022\nTridi.co, Manufacturing Intern, 2022\nYağmaksan, Manufacturing Intern, 2021"
-  },
-  {
     "objectID": "proje.html",
     "href": "proje.html",
     "title": "Proje X (proje adını yazınız)",
@@ -91,17 +77,7 @@
     "href": "portfolyo/calisma1.html",
     "title": "Çalışma 1",
     "section": "",
-    "text": "(Aşağıdakiler örnek olarak verilmiştir.)\nBu çalışmada 3 görevimiz var. Bu görevler….. Bunlara sırayla aşağıda cevap arıyoruz.",
-    "crumbs": [
-      "Çalışma 1"
-    ]
-  },
-  {
-    "objectID": "portfolyo/calisma1.html#a",
-    "href": "portfolyo/calisma1.html#a",
-    "title": "Çalışma 1",
-    "section": "(a)",
-    "text": "(a)\n\n1 + 1\n\n[1] 2",
+    "text": "Veri Bilimi ve Endüstri Mühendisliği Üzerine Sohbetler - Mustafa Baydoğan & Erdi Daşdemir\nSummary\nDr. Baydoğan discussed that industrial engineers take the upper hand in data science by focusing on the root causes of systems rather than just the numbers. Using cases like timber warping and energy forecasting, he demonstrates how combining domain expertise with mathematical modeling leads to more effective results. He highlights that in business, producing explainable data is often more valuable than the raw performance of a complex deep learning model. The discussion also covers how e-commerce ranking can be improved using reinforcement learning to correct data biases. Consequently, he advises students to move beyond theoretical tutorials and gain experience by getting their hands dirty with authentic messy data.\nQuestion-1: What is the main difference or advantage of an industrial engineer in data science projects compared to a computer science engineer and how is this presented in the timber example?\nAnswer-1: The main difference is that an industrial engineer aims to comprehend the root causeof a problem rather than viewing data as just a sequence of numbers, as discussed in [00:14:10]. In the timber example, instead of simply applying a generic image processing algorithm, Dr. Baydoğan researched why wood warps, including physical characteristics such as knot points and ring orientations as “features” in the model, as explained in [00:12:29]. This approach ensured the model was not only predictive via data but also easily understandable and explainable.\nQuestion-2: Which common problem did Dr. Baydoğan highlight about product ranking algorithms in the retail sector and what is the proposed solution?\nA) Data being too massive, requiring models to run on cloud systems.\nB) Biased (polluted) data, frequently shown/clicked products constantly staying at the top, which can be countered by using a penalty score.\nC) Requirement for unstructured data, the belief that ranking can only be completed via deep learning with image and voice recognition.\nD) Logistic costs, prioritizing displaying products that are stored in nearby warehouses at the top of the list.\nAnswer-2: B [00:46:47] - [00:50:05]\n1 + 1\n\n[1] 2",
     "crumbs": [
       "Çalışma 1"
     ]
@@ -115,6 +91,27 @@
     "crumbs": [
       "Çalışma 1"
     ]
+  },
+  {
+    "objectID": "about.html#employments",
+    "href": "about.html#employments",
+    "title": "Hakkımda",
+    "section": "Employments",
+    "text": "Employments\n\nTurkish Aerospace, Fatigue & Damage Tolerance Engineer, June 2023 - Present"
+  },
+  {
+    "objectID": "about.html#internships",
+    "href": "about.html#internships",
+    "title": "Hakkımda",
+    "section": "Internships",
+    "text": "Internships\n\nTurkish Aerospace, Sky Experience Engineering Intern, December 2022 - June 2023\nTEMSA, Marketing Intern, 2022\nTridi.co, Manufacturing Intern, 2022\nYağmaksan, Manufacturing Intern, 2021"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Analitik sayfama hoş geldiniz",
+    "section": "",
+    "text": "MUY660-İş Analitiği dersi sayfama hoş geldiniz.\nBu analitik çalışmalarımızı paylaşıyorum.\n\n\n\n Back to top"
   },
   {
     "objectID": "portfolyo/calisma2.html",
@@ -152,12 +149,5 @@
     "title": "My Blog",
     "section": "",
     "text": "Bu sayfa yapım aşamasındadır.\n\n\n\n Back to top"
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "Analitik sayfama hoş geldiniz",
-    "section": "",
-    "text": "MUY660-İş Analitiği dersi sayfama hoş geldiniz.\nBu analitik çalışmalarımızı paylaşıyorum.\n\n\n\n Back to top"
   }
 ]

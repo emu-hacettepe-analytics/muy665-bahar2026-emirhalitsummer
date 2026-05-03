@@ -2,15 +2,47 @@
 title: "Çalışma 1"
 ---
 
-\
-(Aşağıdakiler örnek olarak verilmiştir.)
+***Veri Bilimi ve Endüstri Mühendisliği Üzerine Sohbetler - Mustafa Baydoğan & Erdi Daşdemir***
 
-Bu çalışmada 3 görevimiz var. Bu görevler..... Bunlara sırayla aşağıda cevap arıyoruz.
+**a. Summary**
 
-## (a)
+Dr. Baydoğan discussed that industrial engineers take the upper hand in data science by focusing on the root causes of systems rather than just the numbers. Using cases like timber warping and energy forecasting, he demonstrates how combining domain expertise with mathematical modeling leads to more effective results. He highlights that in business, producing explainable data is often more valuable than the raw performance of a complex deep learning model. The discussion also covers how e-commerce ranking can be improved using reinforcement learning to correct data biases. Consequently, he advises students to move beyond theoretical tutorials and gain experience by getting their hands dirty with authentic messy data.
+
+**b. Questions**
+
+**Question-1:** What is the main difference or advantage of an industrial engineer in data science projects compared to a computer science engineer and how is this presented in the timber example?
+
+**Answer-1:** The main difference is that an industrial engineer aims to comprehend the root causeof a problem rather than viewing data as just a sequence of numbers, as discussed in \[00:14:10\]. In the timber example, instead of simply applying a generic image processing algorithm, Dr. Baydoğan researched why wood warps, including physical characteristics such as knot points and ring orientations as "features" in the model, as explained in \[00:12:29\]. This approach ensured the model was not only predictive via data but also easily understandable and explainable.
+
+**Question-2:** Which common problem did Dr. Baydoğan highlight about product ranking algorithms in the retail sector and what is the proposed solution?
+
+A\) Data being too massive, requiring models to run on cloud systems.
+
+B\) Biased (polluted) data, frequently shown/clicked products constantly staying at the top, which can be countered by using a penalty score.
+
+C\) Requirement for unstructured data, the belief that ranking can only be completed via deep learning with image and voice recognition.
+
+D\) Logistic costs, prioritizing displaying products that are stored in nearby warehouses at the top of the list.
+
+Answer-2: B \[00:46:47\] - \[00:50:05\]
+
+------------------------------------------------------------------------
 
 ```{r}
-1 + 1
+my_first <- "Emir Halit Sümer"
+my_birth_year <- 1999
+
+k <- (nchar(my_first) + my_birth_year) %% 15 + 8
+k
 ```
 
-## (b)
+```{r}
+library(dslabs)
+data("polls_us_election_2016")
+tail(polls_us_election_2016, k)
+```
+
+```{r}
+sum(is.na(polls_us_election_2016))
+sort(colSums(is.na(polls_us_election_2016)), decreasing = TRUE)[1:8]
+```

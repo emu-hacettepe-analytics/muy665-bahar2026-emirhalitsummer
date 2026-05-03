@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "[xxxx]'in Analitik Labı"
+  title: "EHS'nin Analitik Labı"
   navbar:
     search: true
     left:
@@ -18,7 +18,7 @@ website:
           - text: Ödevler
             href: portfolyo.qmd
           - text: Proje
-            href: project.qmd
+            href: proje.qmd
             
     tools:
       - icon: github

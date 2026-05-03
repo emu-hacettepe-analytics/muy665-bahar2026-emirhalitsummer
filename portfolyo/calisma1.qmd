@@ -46,3 +46,30 @@ tail(polls_us_election_2016, k)
 sum(is.na(polls_us_election_2016))
 sort(colSums(is.na(polls_us_election_2016)), decreasing = TRUE)[1:8]
 ```
+
+```{r}
+new_data <- polls_us_election_2016
+
+for(col in names(new_data)) {
+  if(is.numeric(new_data[[col]])) {
+    new_data[[col]][is.na(new_data[[col]])] <- my_birth_year + k
+  }
+}
+
+for(col in names(new_data)) {
+  if(is.factor(new_data[[col]])) {
+    levels(new_data[[col]]) <- c(levels(new_data[[col]]), paste0(my_first, "_", k))
+    new_data[[col]][is.na(new_data[[col]])] <- paste0(my_first, "_", k)
+  } else if(is.character(new_data[[col]])) {
+    new_data[[col]][is.na(new_data[[col]])] <- paste0(my_first, "_", k)
+  }
+}
+```
+
+```{r}
+tail(new_data, k)
+
+sum(is.na(new_data))
+
+anyNA(new_data)
+```

@@ -1,11 +1,15 @@
+ALTTAKİLERİ KONTROL ETMEYİ UNUTMA:
+
+Verilerinizi R ortamına hangi formatta ve nasıl aktardığınızı açıklayınız. Veri setiniz analize hazır hale gelmeden önce bir ön işleme süreci gerektiriyorsa, yaptığınız işlemleri açıkça belirtiniz. 5. Aşağıdaki hususlara dikkat ediniz: • Verinin yapısını açıklayınız ve kaynaklarını belirtiniz. • Bir keşifsel veri analizi (EDA) yapınız. Veriye genel bir bakış sununuz; değişkenlerin anlamlarını, değer dağılımlarını ve olası analiz yönlerini açıklayınız. • Veri setinizi kapsamlı veri analizi, veri düzenleme ve görselleştirme amacıyla etkili biçimde kullanınız. Anlatımınızın güçlü ve tutarlı olmasına, sonuçlarınızın ikna edici olmasına dikkat ediniz. Yüzeysel analizlerden ve tekrar eden kodlardan kaçınınız. • Analizinizi yalnızca kod ve grafiklerle değil, yazılı açıklamalarla da destekleyiniz. • Raporlar, Quarto ile üretilmiş HTML formatında olmalıdır. HTML raporunuz proje sayfanızda görüntülenecektir.
+
 ---
-title: "Türkiye'de Makine Mühendisliği Bölümlerinin Taban Puanları Analizi"
+title: "Türkiye'de 2018-2020 Yılları Arasında Makine Mühendisliği Bölümlerinin Başarı Sıralamalarının Analizi"
 number-sections: true
 ---
 
-## Proje Genel Bakış ve Kapsamı
+# Proje Genel Bakış ve Kapsamı
 
-Bu proje, Türkiye'deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verilerini analiz etmektedir. 2018-2020 yılları arasındaki taban puanları, başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır.
+Bu projede, Türkiye'deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verileri analiz edilmiştir. 2018-2020 yılları arasındaki başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır. Sıralama değerinde düşüş görülmesi bölümün daha çok tercih edildiği anlamına gelmektedir.
 
 ## Veri
 
@@ -13,15 +17,32 @@ Bu proje, Türkiye'deki üniversitelerin Makine Mühendisliği bölümlerine ait
 
 Veriler, YÖK Atlas portalından `thestats` R paketi aracılığıyla elde edilmiştir.
 
--   YÖK Atlas: <https://yokatlas.yok.gov.tr/>
--   thestats paketi: <https://github.com/analyticsresearchlab/thestats>
+-   YÖK Atlas: https://yokatlas.yok.gov.tr/
+-   thestats paketi: https://github.com/analyticsresearchlab/thestats
 
 ### Veri Hakkında Genel Bilgiler
+
+-   Gerekli kütüphaneler (`thestats`, `dplyr`, `ggplot2`) yüklenmiştir.
+
+<!-- -->
+
+-   YÖK Atlas'tan Makine Mühendisliği verileri alınmıştır.
+
+<!-- -->
+
+-   Veri sütunlarına terim isimleri verilmiştir.
+
+<!-- -->
+
+-   Sayısal sütunlar "numeric" tipine dönüştürülmüştür.
+
+<!-- -->
+
+-   `glimpse()` ile veri setinin özeti paylaşılmıştır.
 
 ```{r}
 #| message: false
 #| warning: false
-
 library(thestats)
 library(dplyr)
 library(ggplot2)
@@ -41,9 +62,8 @@ muhendislik <- list_score(
     kontenjan = X9
   ) |>
   mutate(
-    en_dusuk_puan = as.numeric(en_dusuk_puan),
-    en_yuksek_puan = as.numeric(en_yuksek_puan),
     en_dusuk_siralama = as.numeric(en_dusuk_siralama),
+    en_yuksek_siralama = as.numeric(en_yuksek_siralama),
     kontenjan = as.numeric(kontenjan),
     year = as.integer(year)
   )
@@ -51,16 +71,27 @@ muhendislik <- list_score(
 glimpse(muhendislik)
 ```
 
-### Tercih Sebebi
+NOT: Veri setinde eksik değerler (NA) bulunmaktadır. Bu durum, ilgili yıllarda kontenjanın dolmaması veya programın henüz açılmamış olmasından kaynaklanabilmektedir. Analizlerde NA değerleri `na.rm = TRUE` parametresi kullanılarak göz ardı edilmiştir.
 
-Makine Mühendisliği, Türkiye'de en çok tercih edilen mühendislik bölümlerinden biridir. Yıllar içindeki puan değişimi, bölümün popülaritesi ve üniversite türlerine göre farklılıklar hakkında önemli bulgular sunmaktadır.
+## Tercih Sebebi
 
-### Ön İşleme
+Türkiye'de Makine Mühendisliği, özellikle savunma sanayii, ve otomotiv gibi büyük sektörlerin mihenk taşı olması nedeniyle stratejik bir tercih sebebidir. Mühendislik disiplinleri arasında en geniş çalışma alanına sahiptir ve öğrencilere evrensel teknik standartlarda bir formasyon kazandırmaktadır
+
+Tercih sıralamalarının yıllara göre değişimi ise veri analizi için oldukça zengin bir kaynaktır. Bu veriler üzerinden yapılan bu çalışma; Türkiye'de makine mühendisliğine olan ilgilinin yıllara göre dağılımı açısından bilgilendirici olacaktır. R ile yapılan bu analizi, Türkiye'nin eğitim ve sanayi vizyonunun yıllar içindeki dönüşümünün akademik derinlikte belgelenmesini destekler niteliktedir.
+
+## Ön İşleme
+
+-   Toplam NA sayısı gösterilerek veri kalitesi hakkında bilgi verilmiştir.
+
+-   Alınan veri sayısı belirtilmiştir.
+
+-   Hangi yılların veri setine dahil olduğu gösterilmiştir.
+
+-   Üniversite türleri belirtilmiştir. (State: Devlet, Private: Vakıf)
 
 ```{r}
 #| message: false
 #| warning: false
-
 cat("Toplam NA sayısı:", sum(is.na(muhendislik)), "\n")
 cat("Satır sayısı:", nrow(muhendislik), "\n")
 cat("Yıllar:", unique(muhendislik$year), "\n")
@@ -71,59 +102,132 @@ cat("Üniversite türleri:", unique(muhendislik$type), "\n")
 
 ### Keşifsel Veri Analizi
 
+Yıl ve üniversite türüne göre başarı sıralamalarının özet istatistikleri tablo olarak gösterilmiştir:
+
+-   **ort_siralama** → Belirtilen yıl ve türdeki bölümlerin ortalama başarı sıralaması
+
+-   **medyan_siralama** → Uç değerlerin etkilerini azaltmak için medyan sıralama
+
+Sıralama değeri ne kadar düşükse ilgili bölümün o kadar çok tercih edildiği anlaşılmaktadır. Tablodan görüldüğü üzere vakıf üniversiteleri, devlet üniversitelerine kıyasla daha düşük sıralamaya sahip olup, daha az tercih edildiği anlaşılmaktadır.
+
 ```{r}
 #| message: false
 #| warning: false
-
 muhendislik |>
-  filter(!is.na(en_dusuk_puan)) |>
+  filter(!is.na(en_dusuk_siralama)) |>
   group_by(year, type) |>
-  summarise(ort_taban_puan = mean(en_dusuk_puan, na.rm = TRUE),
-            .groups = "drop")
+  summarise(
+    ort_siralama = mean(en_dusuk_siralama, na.rm = TRUE),
+    medyan_siralama = median(en_dusuk_siralama, na.rm = TRUE),
+    .groups = "drop"
+  )
 ```
 
 ### Trend Analizi
 
+Yıllara göre ortalama başarı sıralamalarının değişimini çizgi grafik olarak görselleştirilmiştir:
+
+-   Her nokta ilgili yıl için ortalama başarı sıralamasını temsil etmektedir.
+
+-   İki ayrı renk ile devlet ve vakıf üniversiteleri ayırt edilmektedir.
+
+-   Çizginin düşmesi tercih sıralamasının arttığını yani bölümün daha az tercih edildiğini göstermektedir.
+
 ```{r}
 #| message: false
 #| warning: false
+library(patchwork)
 
-muhendislik |>
-  filter(!is.na(en_dusuk_puan)) |>
+veri <- muhendislik |>
+  filter(!is.na(en_dusuk_siralama)) |>
+  mutate(type = ifelse(type == "State", "Devlet", "Vakıf")) |>
   group_by(year, type) |>
-  summarise(ort_taban_puan = mean(en_dusuk_puan, na.rm = TRUE),
-            .groups = "drop") |>
-  ggplot(aes(x = year, y = ort_taban_puan, color = type, group = type)) +
-  geom_line(size = 1) +
+  summarise(
+    ort_siralama = mean(en_dusuk_siralama, na.rm = TRUE),
+    medyan_siralama = median(en_dusuk_siralama, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+grafik_ort <- veri |>
+  ggplot(aes(x = year, y = ort_siralama, color = type, group = type)) +
+  geom_line(linewidth = 1) +
   geom_point(size = 3) +
+  scale_x_continuous(breaks = c(2018, 2019, 2020)) +
+  scale_y_reverse() +
   labs(
-    title = "Makine Mühendisliği Taban Puanlarının Yıllara Göre Değişimi",
+    title = "Ortalama",
     x = "Yıl",
-    y = "Ortalama Taban Puan",
+    y = "Ortalama Başarı Sıralaması",
     color = "Üniversite Türü"
   ) +
-  theme_minimal()
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+grafik_medyan <- veri |>
+  ggplot(aes(x = year, y = medyan_siralama, color = type, group = type)) +
+  geom_line(linewidth = 1) +
+  geom_point(size = 3) +
+  scale_x_continuous(breaks = c(2018, 2019, 2020)) +
+  scale_y_reverse() +
+  labs(
+    title = "Medyan",
+    x = "Yıl",
+    y = "Medyan Başarı Sıralaması",
+    color = "Üniversite Türü"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+grafik_ort + grafik_medyan +
+  plot_annotation(
+    title = "Makine Mühendisliği Başarı Sıralamalarının Yıllara Göre Değişimi",
+    subtitle = "Aşağı yön: daha az tercih edilme"
+  ) +
+  plot_layout(guides = "collect") &
+  theme(legend.position = "bottom")
 ```
 
-### Model Uydurma
+## Model Uydurma
+
+Devlet ve vakıf üniversitelerini başarı sıralaması açısından karşılaştıran özet bir tablo hazırlanmıştır:
+
+-   **ort_siralama** → İncelenen yılların ortalama başarı sıralaması
+
+-   **min_siralama** → En düşük sıralama yani en çok tercih edilen program
+
+-   **max_siralama** → En yüksek sıralama yani en az tercih edilen program
+
+Tablodan görüldüğü üzere vakıf üniversitelerinin ortalama sıralaması (122) devlet üniversitelerinden (182) belirgin şekilde düşüktür. Bu durum, vakıf üniversitelerindeki Makine Mühendisliği bölümlerinin daha az tercih edildiğini göstermektedir.
 
 ```{r}
 #| message: false
 #| warning: false
-
 muhendislik |>
-  filter(!is.na(en_dusuk_puan)) |>
+  filter(!is.na(en_dusuk_siralama)) |>
+  mutate(type = ifelse(type == "State", "Devlet", "Vakıf")) |>
   group_by(type) |>
   summarise(
-    ort_taban = mean(en_dusuk_puan, na.rm = TRUE),
-    min_taban = min(en_dusuk_puan, na.rm = TRUE),
-    max_taban = max(en_dusuk_puan, na.rm = TRUE),
+    ort_siralama = mean(en_dusuk_siralama, na.rm = TRUE),
+    min_siralama = min(en_dusuk_siralama, na.rm = TRUE),
+    max_siralama = max(en_dusuk_siralama, na.rm = TRUE),
     .groups = "drop"
   )
 ```
 
 ## Sonuçlar
 
-### Sonuçlar ve Ana Çıkarımlar
+Ortalama başarı sıralamalarının olduğu grafikte görüldüğü üzere devlet üniversitelerine yerleşen öğrencilerin sıralaması 2018-2020 arasında belirgin şekilde gerilemiştir. Vakıf üniversitelerinde de 2019-2020 arasında keskin bir artış gözlemlenmektedir. Bu durum Makine Mühendisliği bölümlerinin her iki üniversite türünde de giderek daha az tercih edildiğine işaret etmektedir.
 
-Analiz tamamlandıktan sonra buraya bulgular eklenecektir.
+**Devlet üniversiteleri:** 2018-2019 arası neredeyse sabit, 2020'de sıralama belirgin artmış (tercih düşmüş).
+
+**Vakıf üniversiteleri:** 2018-2019 arası hafif artış, 2020'de keskin düşüş (tercih artmış).
+
+Ortalamaya göre olan verilere bakıldığında, vakıf üniversitelerinin 2020'de çok daha fazla tercih edilir hale geldiği sonucuna ulaşılabilir.
+
+Medyan grafiği inclendiğinde, vakıf üniversitelerinin 2020'deki düşüşünün ortalama grafiğe kıyasla **çok daha az** olduğu görülmektedir.
+
+2020'de bazı vakıf üniversitesi makine mühendisliği programlarının aşırı yüksek sıralamalarla öğrenci kabul ettiği, bu durumun da ortalamayı aşağıya çektiği anlaşılmaktadır. Dolayısıyla ortalamadaki keskin düşüşün, **birkaç çok düşük sıralamalı vakıf programının** etkisinden kaynaklandığı sonucuna ulaşılmaktadır.
+
+### Özet
+
+Ortalama değerlerle incelen veri setlere aykırı değerlere duyarlıdır. Medyan odaklı inceleme daha sağlıklı bir merkezi eğilim göstermektedir. Bu analizde iki verinin birlikte sunulması, vakıf üniversitelerindeki 2020 değişiminin birkaç programa özgü olduğunu ve genel bir eğilim olmadığını kanıtlar niteliktedir.

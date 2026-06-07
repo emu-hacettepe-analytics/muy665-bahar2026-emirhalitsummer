@@ -1,233 +1,441 @@
-ALTTAKİLERİ KONTROL ETMEYİ UNUTMA:
-
-Verilerinizi R ortamına hangi formatta ve nasıl aktardığınızı açıklayınız. Veri setiniz analize hazır hale gelmeden önce bir ön işleme süreci gerektiriyorsa, yaptığınız işlemleri açıkça belirtiniz. 5. Aşağıdaki hususlara dikkat ediniz: • Verinin yapısını açıklayınız ve kaynaklarını belirtiniz. • Bir keşifsel veri analizi (EDA) yapınız. Veriye genel bir bakış sununuz; değişkenlerin anlamlarını, değer dağılımlarını ve olası analiz yönlerini açıklayınız. • Veri setinizi kapsamlı veri analizi, veri düzenleme ve görselleştirme amacıyla etkili biçimde kullanınız. Anlatımınızın güçlü ve tutarlı olmasına, sonuçlarınızın ikna edici olmasına dikkat ediniz. Yüzeysel analizlerden ve tekrar eden kodlardan kaçınınız. • Analizinizi yalnızca kod ve grafiklerle değil, yazılı açıklamalarla da destekleyiniz. • Raporlar, Quarto ile üretilmiş HTML formatında olmalıdır. HTML raporunuz proje sayfanızda görüntülenecektir.
-
 ---
-title: "Türkiye'de 2018-2020 Yılları Arasında Makine Mühendisliği Bölümlerinin Başarı Sıralamalarının Analizi"
-number-sections: true
+title: "Türkiye'nin Elektriği: Saatin, Mevsimin ve Kaynağın Hikâyesi"
+format:
+  html:
+    code-fold: true
+    code-tools: true
+    toc: true
+    toc-depth: 3
+    fig-width: 9
+    fig-height: 5
+execute:
+  warning: false
+  message: false
+  echo: true
 ---
-
-# Proje Genel Bakış ve Kapsamı
-
-Bu projede, Türkiye'deki üniversitelerin Makine Mühendisliği bölümlerine ait YÖK Atlas verileri analiz edilmiştir. 2018-2020 yılları arasındaki başarı sıralamaları ve kontenjan bilgileri incelenerek devlet ve vakıf üniversiteleri karşılaştırılmıştır. Sıralama değerinde düşüş görülmesi bölümün daha çok tercih edildiği anlamına gelmektedir.
-
-## Veri
-
-### Veri Kaynağı
-
-Veriler, YÖK Atlas portalından `thestats` R paketi aracılığıyla elde edilmiştir.
-
--   YÖK Atlas: https://yokatlas.yok.gov.tr/
--   thestats paketi: https://github.com/analyticsresearchlab/thestats
-
-### Veri Hakkında Genel Bilgiler
-
--   Gerekli kütüphaneler (`thestats`, `dplyr`, `ggplot2`) yüklenmiştir.
-
-<!-- -->
-
--   YÖK Atlas'tan Makine Mühendisliği verileri alınmıştır.
-
-<!-- -->
-
--   Veri sütunlarına terim isimleri verilmiştir.
-
-<!-- -->
-
--   Sayısal sütunlar "numeric" tipine dönüştürülmüştür.
-
-<!-- -->
-
--   `glimpse()` ile veri setinin özeti paylaşılmıştır.
 
 ```{r}
-#| message: false
-#| warning: false
-library(thestats)
-library(dplyr)
-library(ggplot2)
+#| label: setup
+#| include: false
 
-muhendislik <- list_score(
-  region_names = "all",
-  city_names = "all",
-  university_names = "all",
-  department_names = "Mechanical Engineering",
-  var_ids = c("X14", "X15", "X16", "X17", "X9")
-) |>
-  rename(
-    en_dusuk_puan = X14,
-    en_dusuk_siralama = X15,
-    en_yuksek_puan = X16,
-    en_yuksek_siralama = X17,
-    kontenjan = X9
+# --- Gerekli paketler (ilk kez kullanıyorsan bir kez çalıştır) ---
+# install.packages(c("tidyverse","lubridate","readxl","janitor",
+#                    "scales","corrplot","knitr","kableExtra"))
+
+library(tidyverse)
+library(lubridate)
+library(readxl)
+library(janitor)
+library(scales)
+library(corrplot)
+library(knitr)
+library(kableExtra)
+
+theme_set(theme_minimal(base_size = 12))
+```
+
+# Proje Konusu
+
+Elektrik, modern bir ekonominin görünmez omurgasıdır: ne zaman, ne kadar ve hangi kaynaktan üretildiği; sanayinin çarklarından evlerin akşam ışıklarına kadar her şeyi belirler. Bu projede **Türkiye'nin elektrik sistemini saatlik çözünürlükte** ele alıyor ve üç temel soruyu yanıtlıyoruz:
+
+1.  **Saat ve mevsim:** Elektriği günün hangi saatinde, yılın hangi döneminde daha çok tüketiyoruz? Talep nasıl bir ritim izliyor?
+2.  **Kaynak:** Bu elektrik hangi kaynaklardan üretiliyor? Yenilenebilir kaynakların (rüzgâr, güneş, hidro) payı zaman içinde ve gün içinde nasıl değişiyor?
+3.  **Fiyat:** Piyasa Takas Fiyatı (PTF) talep ve üretim kompozisyonuyla nasıl ilişkili? Özellikle güneşin bol olduğu öğle saatlerinde fiyat baskılanıyor mu? (Bu, enerji ekonomisinde **"merit-order etkisi"** olarak bilinir.)
+
+Veriler [EPİAŞ Şeffaflık Platformu](https://seffaflik.epias.com.tr/)'ndan alınmıştır; herkese açık ve ticari olmayan kullanıma uygundur.
+
+# Veri ve Ön İşleme
+
+Analizde EPİAŞ Şeffaflık Platformu'ndan indirilen, saatlik çözünürlükte üç veri seti kullanılmıştır:
+
+-   **`data/tuketim.xlsx`** — Gerçek zamanlı tüketim (MWh)
+-   **`data/uretim.xlsx`** — Gerçek zamanlı üretim, kaynak bazlı (doğalgaz, barajlı, rüzgâr, güneş, linyit vb.; her biri ayrı sütun, MWh)
+-   **`data/ptf.xlsx`** — Gün Öncesi Piyasası Piyasa Takas Fiyatı / PTF (TL/MWh)
+
+Veriler platformun web arayüzünden Excel olarak indirilmiş, depo içindeki `data/` klasörüne konulmuştur. Aşağıdaki adımlarda dosyalar R'a aktarılır, tarih/saat bilgisi ayrıştırılır ve üç set tek bir **saatlik ana tablo**da (`master`) birleştirilir.
+
+```{r}
+#| label: yardimci-fonksiyonlar
+
+# Tarih sütununu esnek biçimde POSIXct'e çeviren yardımcı fonksiyon.
+# (EPİAŞ exportları kimi zaman düz metin, kimi zaman Excel tarihi getirir.)
+parse_tarih <- function(x) {
+  if (inherits(x, "POSIXct")) return(x)
+  if (inherits(x, "Date"))    return(as_datetime(x))
+  lubridate::parse_date_time(
+    as.character(x),
+    orders = c("Ymd HMS", "Ymd HM", "dmY HMS", "dmY HM",
+               "Ymd THMS", "Ymd", "dmY"),
+    tz = "Europe/Istanbul"
+  )
+}
+
+# Bir tablodaki ilk sayısal sütunu (varsa anahtar kelimeye öncelik vererek) seçer.
+ilk_sayisal <- function(df, anahtar = NULL) {
+  num <- df |> dplyr::select(where(is.numeric))
+  if (!is.null(anahtar)) {
+    esles <- names(num)[str_detect(names(num), regex(anahtar, ignore_case = TRUE))]
+    if (length(esles) > 0) return(num[[esles[1]]])
+  }
+  num[[1]]
+}
+
+# Bir tabloda anahtar kelimeye uyan ilk sütunu döndürür (yoksa NA).
+pick_col <- function(df, key) {
+  hit <- names(df)[str_detect(names(df), regex(key, ignore_case = TRUE)) &
+                     names(df) != "tarih"]
+  if (length(hit)) df[[hit[1]]] else rep(NA_real_, nrow(df))
+}
+```
+
+```{r}
+#| label: veri-okuma
+
+# --- 1) Tüketim ---
+tuketim_raw <- read_excel("data/tuketim.xlsx") |> clean_names()
+names(tuketim_raw)[1] <- ".tarih_raw"           # ilk sütun = tarih
+tuketim <- tibble(
+  tarih       = parse_tarih(tuketim_raw$.tarih_raw),
+  tuketim_mwh = ilk_sayisal(dplyr::select(tuketim_raw, -.tarih_raw), "tuket")
+)
+
+# --- 2) PTF (fiyat) ---
+ptf_raw <- read_excel("data/ptf.xlsx") |> clean_names()
+names(ptf_raw)[1] <- ".tarih_raw"
+ptf <- tibble(
+  tarih  = parse_tarih(ptf_raw$.tarih_raw),
+  ptf_tl = ilk_sayisal(dplyr::select(ptf_raw, -.tarih_raw), "tl")  # TL/MWh sütunu
+)
+
+# --- 3) Üretim (kaynak bazlı -> uzun format) ---
+uretim_raw <- read_excel("data/uretim.xlsx") |> clean_names()
+names(uretim_raw)[1] <- ".tarih_raw"
+uretim_long <- uretim_raw |>
+  mutate(tarih = parse_tarih(.tarih_raw)) |>
+  dplyr::select(-.tarih_raw) |>
+  pivot_longer(cols = where(is.numeric),
+               names_to = "kaynak", values_to = "uretim_mwh") |>
+  # "toplam/genel" gibi özet sütunlarını analiz dışında bırak
+  filter(!str_detect(kaynak, regex("toplam|total|genel", ignore_case = TRUE)))
+
+# Yenilenebilir kaynakları işaretle
+yenilenebilir_anahtar <- "ruzgar|wind|gunes|solar|jeotermal|biyokutle|baraj|akarsu|hidro|atik"
+uretim_long <- uretim_long |>
+  mutate(yenilenebilir = str_detect(kaynak, regex(yenilenebilir_anahtar,
+                                                  ignore_case = TRUE)))
+
+# Her saat için toplam üretim ve yenilenebilir payı
+uretim_ozet <- uretim_long |>
+  group_by(tarih) |>
+  summarise(
+    toplam_uretim        = sum(uretim_mwh, na.rm = TRUE),
+    yenilenebilir_uretim = sum(uretim_mwh[yenilenebilir], na.rm = TRUE),
+    .groups = "drop"
   ) |>
+  mutate(yenilenebilir_pay = 100 * yenilenebilir_uretim / toplam_uretim)
+
+# Kaynakları geniş formatta da tut (korelasyon için)
+kaynak_genis <- uretim_long |>
+  group_by(tarih, kaynak) |>
+  summarise(uretim_mwh = sum(uretim_mwh, na.rm = TRUE), .groups = "drop") |>
+  pivot_wider(names_from = kaynak, values_from = uretim_mwh)
+```
+
+```{r}
+#| label: ana-tablo
+
+ay_isim <- c("Oca","Şub","Mar","Nis","May","Haz",
+             "Tem","Ağu","Eyl","Eki","Kas","Ara")
+
+master <- tuketim |>
+  left_join(ptf,         by = "tarih") |>
+  left_join(uretim_ozet, by = "tarih") |>
+  filter(!is.na(tarih)) |>
   mutate(
-    en_dusuk_siralama = as.numeric(en_dusuk_siralama),
-    en_yuksek_siralama = as.numeric(en_yuksek_siralama),
-    kontenjan = as.numeric(kontenjan),
-    year = as.integer(year)
-  )
-
-glimpse(muhendislik)
-```
-
-NOT: Veri setinde eksik değerler (NA) bulunmaktadır. Bu durum, ilgili yıllarda kontenjanın dolmaması veya programın henüz açılmamış olmasından kaynaklanabilmektedir. Analizlerde NA değerleri `na.rm = TRUE` parametresi kullanılarak göz ardı edilmiştir.
-
-## Tercih Sebebi
-
-Türkiye'de Makine Mühendisliği, özellikle savunma sanayii, ve otomotiv gibi büyük sektörlerin mihenk taşı olması nedeniyle stratejik bir tercih sebebidir. Mühendislik disiplinleri arasında en geniş çalışma alanına sahiptir ve öğrencilere evrensel teknik standartlarda bir formasyon kazandırmaktadır
-
-Tercih sıralamalarının yıllara göre değişimi ise veri analizi için oldukça zengin bir kaynaktır. Bu veriler üzerinden yapılan bu çalışma; Türkiye'de makine mühendisliğine olan ilgilinin yıllara göre dağılımı açısından bilgilendirici olacaktır. R ile yapılan bu analizi, Türkiye'nin eğitim ve sanayi vizyonunun yıllar içindeki dönüşümünün akademik derinlikte belgelenmesini destekler niteliktedir.
-
-## Ön İşleme
-
--   Toplam NA sayısı gösterilerek veri kalitesi hakkında bilgi verilmiştir.
-
--   Alınan veri sayısı belirtilmiştir.
-
--   Hangi yılların veri setine dahil olduğu gösterilmiştir.
-
--   Üniversite türleri belirtilmiştir. (State: Devlet, Private: Vakıf)
-
-```{r}
-#| message: false
-#| warning: false
-cat("Toplam NA sayısı:", sum(is.na(muhendislik)), "\n")
-cat("Satır sayısı:", nrow(muhendislik), "\n")
-cat("Yıllar:", unique(muhendislik$year), "\n")
-cat("Üniversite türleri:", unique(muhendislik$type), "\n")
-```
-
-## Analiz
-
-### Keşifsel Veri Analizi
-
-Yıl ve üniversite türüne göre başarı sıralamalarının özet istatistikleri tablo olarak gösterilmiştir:
-
--   **ort_siralama** → Belirtilen yıl ve türdeki bölümlerin ortalama başarı sıralaması
-
--   **medyan_siralama** → Uç değerlerin etkilerini azaltmak için medyan sıralama
-
-Sıralama değeri ne kadar düşükse ilgili bölümün o kadar çok tercih edildiği anlaşılmaktadır. Tablodan görüldüğü üzere vakıf üniversiteleri, devlet üniversitelerine kıyasla daha düşük sıralamaya sahip olup, daha az tercih edildiği anlaşılmaktadır.
-
-```{r}
-#| message: false
-#| warning: false
-muhendislik |>
-  filter(!is.na(en_dusuk_siralama)) |>
-  group_by(year, type) |>
-  summarise(
-    ort_siralama = mean(en_dusuk_siralama, na.rm = TRUE),
-    medyan_siralama = median(en_dusuk_siralama, na.rm = TRUE),
-    .groups = "drop"
+    tarih_gun  = as_date(tarih),
+    saat       = hour(tarih),
+    ay_no      = month(tarih),
+    ay         = factor(ay_isim[ay_no], levels = ay_isim),
+    hafta_gunu = wday(tarih, week_start = 1),
+    hafta_sonu = if_else(hafta_gunu >= 6, "Hafta Sonu", "Hafta İçi"),
+    mevsim     = case_when(
+      ay_no %in% c(12, 1, 2) ~ "Kış",
+      ay_no %in% c(3, 4, 5)  ~ "İlkbahar",
+      ay_no %in% c(6, 7, 8)  ~ "Yaz",
+      TRUE                   ~ "Sonbahar"
+    )
   )
 ```
 
-### Trend Analizi
-
-Yıllara göre ortalama başarı sıralamalarının değişimini çizgi grafik olarak görselleştirilmiştir:
-
--   Her nokta ilgili yıl için ortalama başarı sıralamasını temsil etmektedir.
-
--   İki ayrı renk ile devlet ve vakıf üniversiteleri ayırt edilmektedir.
-
--   Çizginin düşmesi tercih sıralamasının arttığını yani bölümün daha az tercih edildiğini göstermektedir.
+Aşağıda birleştirilmiş ana tablonun yapısı görülmektedir. Her satır bir **saati** temsil eder; tüketim, fiyat, toplam üretim, yenilenebilir payı ve takvim değişkenleri yan yana gelir.
 
 ```{r}
-#| message: false
-#| warning: false
-library(patchwork)
+#| label: glimpse
+glimpse(master)
+```
 
-veri <- muhendislik |>
-  filter(!is.na(en_dusuk_siralama)) |>
-  mutate(type = ifelse(type == "State", "Devlet", "Vakıf")) |>
-  group_by(year, type) |>
-  summarise(
-    ort_siralama = mean(en_dusuk_siralama, na.rm = TRUE),
-    medyan_siralama = median(en_dusuk_siralama, na.rm = TRUE),
-    .groups = "drop"
+# Keşifsel Veri Analizi (EDA)
+
+Veriye genel bir bakışla başlıyoruz. Aşağıdaki tablo, veri setinin kapsamını ve birkaç temel özet istatistiği gösterir.
+
+```{r}
+#| label: ozet-tablo
+ozet_tablo <- tibble(
+  Metrik = c("Gözlem (saat) sayısı", "Başlangıç", "Bitiş",
+             "Ort. saatlik tüketim (MWh)", "Ort. PTF (TL/MWh)",
+             "Ort. yenilenebilir pay (%)"),
+  Değer = c(
+    format(nrow(master), big.mark = "."),
+    format(min(master$tarih, na.rm = TRUE)),
+    format(max(master$tarih, na.rm = TRUE)),
+    format(round(mean(master$tuketim_mwh, na.rm = TRUE)), big.mark = "."),
+    format(round(mean(master$ptf_tl, na.rm = TRUE)), big.mark = "."),
+    round(mean(master$yenilenebilir_pay, na.rm = TRUE), 1)
   )
+)
+kable(ozet_tablo, caption = "Veri Setine Genel Bakış", align = "lr") |>
+  kable_styling(full_width = FALSE, bootstrap_options = c("striped", "hover"))
+```
 
-grafik_ort <- veri |>
-  ggplot(aes(x = year, y = ort_siralama, color = type, group = type)) +
+Tüketimin zaman içindeki seyrini günlük ortalamalarla görselleştirelim. Bu grafik hem genel eğilimi hem de mevsimsel dalgalanmayı bir arada gösterir.
+
+```{r}
+#| label: gunluk-tuketim
+master |>
+  group_by(tarih_gun) |>
+  summarise(gunluk = mean(tuketim_mwh, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(tarih_gun, gunluk)) +
+  geom_line(color = "steelblue", alpha = 0.7) +
+  geom_smooth(se = FALSE, color = "firebrick", linewidth = 0.7) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "Günlük Ortalama Elektrik Tüketimi",
+       x = NULL, y = "Tüketim (MWh)")
+```
+
+Grafikte tüketimin sabit olmadığı, belirgin **dalgalanmalar** çizdiği görülür. İncelenen Ocak–Nisan 2026 döneminde özellikle kış aylarında (ısıtma ve aydınlatma kaynaklı) talebin yüksek seyrettiği, ilkbahara doğru ılıman havayla birlikte gerilediği görülür. Kırmızı eğilim çizgisi, dönem boyunca genel seyri (artış/azalış veya yataylık) özetler.
+
+# Analiz ve Bulgular
+
+## Gün İçi Tüketim Ritmi
+
+Elektrik talebi gün içinde sabit değildir; insan yaşamının ritmini birebir takip eder. Saatlik ortalamalarla bu profili, hafta içi ve hafta sonunu ayırarak inceleyelim.
+
+```{r}
+#| label: gun-ici-profil
+master |>
+  group_by(saat, hafta_sonu) |>
+  summarise(ort = mean(tuketim_mwh, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(saat, ort, color = hafta_sonu)) +
   geom_line(linewidth = 1) +
-  geom_point(size = 3) +
-  scale_x_continuous(breaks = c(2018, 2019, 2020)) +
-  scale_y_reverse() +
-  labs(
-    title = "Ortalama",
-    x = "Yıl",
-    y = "Ortalama Başarı Sıralaması",
-    color = "Üniversite Türü"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-grafik_medyan <- veri |>
-  ggplot(aes(x = year, y = medyan_siralama, color = type, group = type)) +
-  geom_line(linewidth = 1) +
-  geom_point(size = 3) +
-  scale_x_continuous(breaks = c(2018, 2019, 2020)) +
-  scale_y_reverse() +
-  labs(
-    title = "Medyan",
-    x = "Yıl",
-    y = "Medyan Başarı Sıralaması",
-    color = "Üniversite Türü"
-  ) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-grafik_ort + grafik_medyan +
-  plot_annotation(
-    title = "Makine Mühendisliği Başarı Sıralamalarının Yıllara Göre Değişimi",
-    subtitle = "Aşağı yön: daha az tercih edilme"
-  ) +
-  plot_layout(guides = "collect") &
-  theme(legend.position = "bottom")
+  geom_point(size = 1.6) +
+  scale_x_continuous(breaks = seq(0, 23, 3)) +
+  scale_y_continuous(labels = label_comma()) +
+  scale_color_manual(values = c("Hafta İçi" = "#2c7fb8", "Hafta Sonu" = "#d95f0e")) +
+  labs(title = "Gün İçi Tüketim Profili",
+       x = "Saat", y = "Ort. Tüketim (MWh)", color = NULL)
 ```
 
-## Model Uydurma
+Profil tipik olarak **çift tepeli** bir yapı gösterir: sabah iş/okul başlangıcıyla bir yükseliş, gece yarısına doğru en düşük seviye. Hafta içi talebin, sanayi ve ticaretin aktif olması nedeniyle hafta sonundan belirgin biçimde yüksek seyretmesi beklenir; bu fark özellikle gündüz saatlerinde açılır.
 
-Devlet ve vakıf üniversitelerini başarı sıralaması açısından karşılaştıran özet bir tablo hazırlanmıştır:
+## Saat × Ay Isı Haritası
 
--   **ort_siralama** → İncelenen yılların ortalama başarı sıralaması
-
--   **min_siralama** → En düşük sıralama yani en çok tercih edilen program
-
--   **max_siralama** → En yüksek sıralama yani en az tercih edilen program
-
-Tablodan görüldüğü üzere vakıf üniversitelerinin ortalama sıralaması (122) devlet üniversitelerinden (182) belirgin şekilde düşüktür. Bu durum, vakıf üniversitelerindeki Makine Mühendisliği bölümlerinin daha az tercih edildiğini göstermektedir.
+Saat ve ay boyutlarını tek bir görselde birleştiren ısı haritası, talebin "ne zaman" yoğunlaştığını çarpıcı biçimde özetler.
 
 ```{r}
-#| message: false
-#| warning: false
-muhendislik |>
-  filter(!is.na(en_dusuk_siralama)) |>
-  mutate(type = ifelse(type == "State", "Devlet", "Vakıf")) |>
-  group_by(type) |>
-  summarise(
-    ort_siralama = mean(en_dusuk_siralama, na.rm = TRUE),
-    min_siralama = min(en_dusuk_siralama, na.rm = TRUE),
-    max_siralama = max(en_dusuk_siralama, na.rm = TRUE),
-    .groups = "drop"
-  )
+#| label: isi-haritasi
+master |>
+  group_by(ay, saat) |>
+  summarise(ort = mean(tuketim_mwh, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(ay, saat, fill = ort)) +
+  geom_tile() +
+  scale_fill_viridis_c(option = "C", labels = label_comma()) +
+  scale_y_continuous(breaks = seq(0, 23, 3)) +
+  labs(title = "Saat × Ay Ortalama Tüketim Isı Haritası",
+       x = NULL, y = "Saat", fill = "MWh")
 ```
 
-## Sonuçlar
+Isı haritasındaki en parlak (yüksek tüketim) bölgeler, yaz aylarının gündüz/öğleden sonra saatlerinde ve kış aylarının akşam saatlerinde yoğunlaşma eğilimindedir. Bu desen, yazın soğutma, kışın ısıtma ve aydınlatma kaynaklı talebin saat içindeki farklı zamanlamalarını ortaya koyar.
 
-Ortalama başarı sıralamalarının olduğu grafikte görüldüğü üzere devlet üniversitelerine yerleşen öğrencilerin sıralaması 2018-2020 arasında belirgin şekilde gerilemiştir. Vakıf üniversitelerinde de 2019-2020 arasında keskin bir artış gözlemlenmektedir. Bu durum Makine Mühendisliği bölümlerinin her iki üniversite türünde de giderek daha az tercih edildiğine işaret etmektedir.
+## Mevsimsellik
 
-**Devlet üniversiteleri:** 2018-2019 arası neredeyse sabit, 2020'de sıralama belirgin artmış (tercih düşmüş).
+Aylara göre günlük tüketim dağılımını kutu grafiğiyle incelersek, hem ortalama düzeyi hem de ay içindeki değişkenliği birlikte görebiliriz.
 
-**Vakıf üniversiteleri:** 2018-2019 arası hafif artış, 2020'de keskin düşüş (tercih artmış).
+```{r}
+#| label: mevsimsellik
+master |>
+  group_by(tarih_gun, ay) |>
+  summarise(gunluk = mean(tuketim_mwh, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(ay, gunluk)) +
+  geom_boxplot(fill = "#a6bddb", outlier.alpha = 0.3) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "Aylara Göre Günlük Tüketim Dağılımı",
+       x = NULL, y = "Günlük Ort. Tüketim (MWh)")
+```
 
-Ortalamaya göre olan verilere bakıldığında, vakıf üniversitelerinin 2020'de çok daha fazla tercih edilir hale geldiği sonucuna ulaşılabilir.
+İncelenen Ocak–Nisan 2026 döneminde kış aylarının (Ocak–Şubat) ısıtma ve aydınlatma kaynaklı yüksek talebi dikkat çekerken, ilkbahara (Mart–Nisan) doğru ılıman havayla birlikte tüketimin kademeli olarak gerilediği görülür. Geniş kutular, ay içindeki gün-gün değişkenliğe işaret eder.
 
-Medyan grafiği inclendiğinde, vakıf üniversitelerinin 2020'deki düşüşünün ortalama grafiğe kıyasla **çok daha az** olduğu görülmektedir.
+## Üretim Kaynaklarının Kompozisyonu
 
-2020'de bazı vakıf üniversitesi makine mühendisliği programlarının aşırı yüksek sıralamalarla öğrenci kabul ettiği, bu durumun da ortalamayı aşağıya çektiği anlaşılmaktadır. Dolayısıyla ortalamadaki keskin düşüşün, **birkaç çok düşük sıralamalı vakıf programının** etkisinden kaynaklandığı sonucuna ulaşılmaktadır.
+Elektriğin nereden geldiğine bakalım. Aşağıdaki alan grafiği, aylara göre her kaynağın toplam üretimdeki **payını** gösterir (en büyük 7 kaynak ayrı, kalanı "Diğer" altında toplanmıştır).
 
-### Özet
+```{r}
+#| label: kaynak-paylari
+# En büyük kaynakları belirle, kalanını "Diğer" altında topla
+ana_kaynaklar <- uretim_long |>
+  group_by(kaynak) |>
+  summarise(top = sum(uretim_mwh, na.rm = TRUE), .groups = "drop") |>
+  slice_max(top, n = 7) |>
+  pull(kaynak)
 
-Ortalama değerlerle incelen veri setlere aykırı değerlere duyarlıdır. Medyan odaklı inceleme daha sağlıklı bir merkezi eğilim göstermektedir. Bu analizde iki verinin birlikte sunulması, vakıf üniversitelerindeki 2020 değişiminin birkaç programa özgü olduğunu ve genel bir eğilim olmadığını kanıtlar niteliktedir.
+guzel_isim <- function(x) str_to_title(str_replace_all(x, "_", " "))
+
+uretim_long |>
+  mutate(kaynak_g = if_else(kaynak %in% ana_kaynaklar, kaynak, "diger"),
+         ay_no = month(tarih)) |>
+  group_by(ay_no, kaynak_g) |>
+  summarise(uretim = sum(uretim_mwh, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(ay_no, uretim, fill = guzel_isim(kaynak_g))) +
+  geom_area(position = "fill", color = "white", linewidth = 0.1) +
+  scale_x_continuous(breaks = 1:12, labels = ay_isim) +
+  scale_y_continuous(labels = label_percent()) +
+  scale_fill_brewer(palette = "Set2") +
+  labs(title = "Aylara Göre Üretim Kaynak Payları",
+       x = NULL, y = "Toplam Üretimdeki Pay", fill = "Kaynak")
+```
+
+Türkiye'nin üretim portföyünde **doğalgaz ve kömür (linyit/ithal kömür)** gibi termik kaynaklar önemli bir yer tutarken; **barajlı hidro** suyun bolluğuna bağlı olarak mevsimsel dalgalanır (ilkbaharda kar erimesiyle artma eğilimindedir). Rüzgâr ve güneşin payı son yıllarda istikrarlı biçimde büyümektedir.
+
+Yenilenebilir kaynakların toplam payının aylık seyrini ayrıca izleyelim.
+
+```{r}
+#| label: yenilenebilir-pay
+uretim_ozet |>
+  mutate(ay_gun = floor_date(tarih, "month")) |>
+  group_by(ay_gun) |>
+  summarise(pay = mean(yenilenebilir_pay, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(ay_gun, pay)) +
+  geom_col(fill = "seagreen", alpha = 0.85) +
+  scale_y_continuous(labels = label_number(suffix = "%")) +
+  labs(title = "Aylık Ortalama Yenilenebilir Üretim Payı",
+       x = NULL, y = "Yenilenebilir Pay")
+```
+
+## Güneşin Gün İçi İmzası
+
+Güneş üretimi, doğası gereği yalnızca gündüz saatlerinde gerçekleşir ve öğle civarında zirve yapar. Bu "kubbe" şeklindeki profil, güneşin sisteme katkısının zamanlamasını gösterir.
+
+```{r}
+#| label: gunes-profil
+uretim_long |>
+  filter(str_detect(kaynak, regex("gunes|solar", ignore_case = TRUE))) |>
+  mutate(saat = hour(tarih)) |>
+  group_by(saat) |>
+  summarise(ort = mean(uretim_mwh, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(saat, ort)) +
+  geom_area(fill = "#fec44f", alpha = 0.6) +
+  geom_line(color = "#d95f0e", linewidth = 1.1) +
+  scale_x_continuous(breaks = seq(0, 23, 3)) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "Güneş Üretiminin Gün İçi Profili",
+       x = "Saat", y = "Ort. Üretim (MWh)")
+```
+
+Üretim sabah doğuşla yükselir, **öğle saatlerinde (≈12-14) zirve** yapar ve akşam batışıyla sıfıra iner. Bu zamanlamanın, az sonra göreceğimiz fiyat davranışı üzerinde doğrudan etkisi vardır.
+
+## Fiyat (PTF) Davranışı
+
+PTF'nin gün içi profili, talep ritmini ve arz koşullarını birlikte yansıtır.
+
+```{r}
+#| label: ptf-profil
+master |>
+  group_by(saat) |>
+  summarise(ort = mean(ptf_tl, na.rm = TRUE), .groups = "drop") |>
+  ggplot(aes(saat, ort)) +
+  geom_line(color = "firebrick", linewidth = 1.1) +
+  geom_point(color = "firebrick", size = 1.6) +
+  scale_x_continuous(breaks = seq(0, 23, 3)) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "PTF'nin Gün İçi Profili",
+       x = "Saat", y = "Ort. PTF (TL/MWh)")
+```
+
+Şimdi iki kilit ilişkiyi inceleyelim. Önce **fiyat–talep**: talep arttıkça, devreye daha pahalı santraller girdiği için fiyatın yükselmesi beklenir.
+
+```{r}
+#| label: ptf-tuketim
+master |>
+  ggplot(aes(tuketim_mwh, ptf_tl)) +
+  geom_point(alpha = 0.12, color = "#2c7fb8") +
+  geom_smooth(method = "lm", color = "firebrick", se = TRUE) +
+  scale_x_continuous(labels = label_comma()) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "Tüketim ile PTF İlişkisi",
+       x = "Saatlik Tüketim (MWh)", y = "PTF (TL/MWh)")
+```
+
+Ardından **fiyat–yenilenebilir payı**: rüzgâr ve güneş gibi yakıt maliyeti sıfıra yakın kaynakların payı arttığında, pahalı termik santrallere ihtiyaç azalır ve fiyatın düşmesi beklenir. Bu, enerji ekonomisindeki **merit-order (liyakat sırası) etkisidir.**
+
+```{r}
+#| label: ptf-yenilenebilir
+master |>
+  ggplot(aes(yenilenebilir_pay, ptf_tl)) +
+  geom_point(alpha = 0.12, color = "seagreen") +
+  geom_smooth(method = "lm", color = "firebrick", se = TRUE) +
+  scale_y_continuous(labels = label_comma()) +
+  labs(title = "Yenilenebilir Payı ile PTF İlişkisi (Merit-Order Etkisi)",
+       x = "Yenilenebilir Pay (%)", y = "PTF (TL/MWh)")
+```
+
+Aşağıdaki basit doğrusal model, bu ilişkilerin yönünü ve büyüklüğünü sayısal olarak özetler.
+
+```{r}
+#| label: regresyon
+model <- lm(ptf_tl ~ tuketim_mwh + yenilenebilir_pay, data = master)
+summary(model)
+```
+
+## Korelasyon Matrisi
+
+Son olarak, temel değişkenler arasındaki doğrusal ilişkileri tek bir görselde toplayalım.
+
+```{r}
+#| label: korelasyon
+kor_src <- tibble(
+  tarih    = kaynak_genis$tarih,
+  Dogalgaz = pick_col(kaynak_genis, "dogalgaz|gas"),
+  Baraj    = pick_col(kaynak_genis, "baraj"),
+  Ruzgar   = pick_col(kaynak_genis, "ruzgar|wind"),
+  Gunes    = pick_col(kaynak_genis, "gunes|solar")
+)
+
+kor_veri <- master |>
+  dplyr::select(tarih, tuketim_mwh, ptf_tl, toplam_uretim, yenilenebilir_pay) |>
+  left_join(kor_src, by = "tarih") |>
+  dplyr::select(-tarih) |>
+  rename(Tuketim = tuketim_mwh, PTF = ptf_tl,
+         `Toplam Üretim` = toplam_uretim, `Yenilenebilir %` = yenilenebilir_pay)
+
+cm <- cor(kor_veri, use = "pairwise.complete.obs")
+corrplot(cm, method = "circle", type = "upper",
+         addCoef.col = "black", number.cex = 0.7,
+         tl.col = "black", tl.srt = 45)
+```
+
+Korelasyon matrisinde tüketim ile toplam üretim arasında güçlü pozitif bir ilişki beklenir (talep arzı çeker). PTF'nin tüketimle pozitif, yenilenebilir payıyla negatif yönde ilişkili çıkması ise yukarıda anlattığımız iki mekanizmayı (talep baskısı ve merit-order etkisi) doğrular niteliktedir.
+
+# Sonuçlar ve Çıkarımlar
+
+Bu çalışma, Türkiye'nin elektrik sistemini saatlik veriyle üç eksende inceledi ve şu temel bulgulara ulaştı:
+
+-   **Talebin bir ritmi var.** Tüketim gün içinde çift tepeli (sabah ve akşam) bir profil izliyor; hafta içi hafta sonundan yüksek. İncelenen kış–ilkbahar döneminde kış ayları daha yüksek talep gösteriyor.
+-   **Üretimde termik kaynaklar baskın, ama yenilenebilir büyüyor.** Doğalgaz ve kömür ağırlığını korurken, barajlı hidro mevsimsel; rüzgâr ve güneşin payı artış eğiliminde.
+-   **Güneşin zamanlaması fiyatı etkiliyor.** Güneş öğle saatlerinde zirve yapıyor; yenilenebilir payının yüksek olduğu saatlerde PTF baskılanıyor (merit-order etkisi). Talep arttığında ise fiyat yükseliyor.
+
+Bu tablo, **talep yönetimi ve depolama** yatırımlarının değerini ortaya koyuyor: gündüz bol ve ucuz olan yenilenebilir enerjiyi akşam pik saatlerine taşıyabilmek, hem maliyetleri hem de termik kaynaklara bağımlılığı azaltabilir. Saatlik fiyat sinyallerine duyarlı bir tüketim (örneğin esnek sanayi yükleri, akıllı şarj) sistemin verimliliğini artırma potansiyeline sahiptir.
+
+------------------------------------------------------------------------
+
+## Yapay Zekâ Kullanımı
+
+Bu proje Claude yapay zekâ asistanından yararlanılarak hazırlanmıştır. Kullanılan temsilî komut: *"EPİAŞ Şeffaflık Platformu'ndan alınan saatlik elektrik tüketim, kaynak bazlı üretim ve PTF verileriyle; gün içi/mevsimsel talep profili, üretim kaynak kompozisyonu ve fiyat–talep–yenilenebilir ilişkisini inceleyen, R kodu üretilmesine yardımcı ol."* Üretilen tüm içerik, kendi akademik muhakememle gözden geçirilmiş; grafikler ve yorumlar verinin gerçek sonuçlarıyla karşılaştırılarak doğrulanmıştır.

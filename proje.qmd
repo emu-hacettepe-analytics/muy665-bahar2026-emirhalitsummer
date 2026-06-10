@@ -403,7 +403,7 @@ Son olarak, temel değişkenler arasındaki doğrusal ilişkileri tek bir görse
 #| label: korelasyon
 kor_src <- tibble(
   tarih    = kaynak_genis$tarih,
-  Dogalgaz = pick_col(kaynak_genis, "dogalgaz|gas"),
+  Dogalgaz = pick_col(kaynak_genis, "dogal"),
   Baraj    = pick_col(kaynak_genis, "baraj"),
   Ruzgar   = pick_col(kaynak_genis, "ruzgar|wind"),
   Gunes    = pick_col(kaynak_genis, "gunes|solar")

@@ -903,7 +903,7 @@ F-statistic:  1430 on 2 and 2181 DF,  p-value: &lt; 2.2e-16</code></pre>
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>kor_src <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">tarih    =</span> kaynak_genis<span class="sc">$</span>tarih,</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dogalgaz =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"dogalgaz|gas"</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dogalgaz =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"dogal"</span>),</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Baraj    =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"baraj"</span>),</span>
 <span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Ruzgar   =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"ruzgar|wind"</span>),</span>
 <span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gunes    =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"gunes|solar"</span>)</span>
@@ -1822,7 +1822,7 @@ F-statistic:  1430 on 2 and 2181 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb20-439"><a href="#cb20-439" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: korelasyon</span></span>
 <span id="cb20-440"><a href="#cb20-440" aria-hidden="true" tabindex="-1"></a>kor_src <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
 <span id="cb20-441"><a href="#cb20-441" aria-hidden="true" tabindex="-1"></a>  <span class="at">tarih    =</span> kaynak_genis<span class="sc">$</span>tarih,</span>
-<span id="cb20-442"><a href="#cb20-442" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dogalgaz =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"dogalgaz|gas"</span>),</span>
+<span id="cb20-442"><a href="#cb20-442" aria-hidden="true" tabindex="-1"></a>  <span class="at">Dogalgaz =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"dogal"</span>),</span>
 <span id="cb20-443"><a href="#cb20-443" aria-hidden="true" tabindex="-1"></a>  <span class="at">Baraj    =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"baraj"</span>),</span>
 <span id="cb20-444"><a href="#cb20-444" aria-hidden="true" tabindex="-1"></a>  <span class="at">Ruzgar   =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"ruzgar|wind"</span>),</span>
 <span id="cb20-445"><a href="#cb20-445" aria-hidden="true" tabindex="-1"></a>  <span class="at">Gunes    =</span> <span class="fu">pick_col</span>(kaynak_genis, <span class="st">"gunes|solar"</span>)</span>
